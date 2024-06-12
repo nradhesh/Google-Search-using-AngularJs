@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Search</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body ng-app="GoogleSearchApp">
+    <div ng-controller="GoogleSearchController as vm" class="container">
+        <form class="form-horizontal">
+            <h1 class = "google-header ">Google Search</h1>
+            <input type="text" ng-model="vm.searchTerm">
+            <button class="btn btn-secondary" ng-click="vm.doSearch()">
+                <i class="fa fa-search"></i> Search
+            </button>
+        </form>
+
+        <ul>
+            <li ng-repeat="item in vm.searchResults">{{ item.title }}</li>
+        </ul>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module("GoogleSearchApp", []);
+        app.controller("GoogleSearchController", ['$http', '$scope', function($http, $scope) {
+            $scope.vm = this;
+
+            $scope.vm.doSearch = function() {
+                var apiKey = 'AIzaSyDhjIBIVoKw7kvLCryX4W0qmDcAZh5ygkc';
+
+                var cx = 'd415a56550592449d'; // Replace with your Custom Search Engine ID
+                var searchTerm = $scope.vm.searchTerm;
+
+                var url = 'https://www.googleapis.com/customsearch/v1?q=' + searchTerm + '&cx=' + cx + '&key=' + apiKey;
+
+                $http.get(url)
+                    .then(function(response) {
+                        $scope.vm.searchResults = response.data.items;
+                    }, function(error) {
+                        console.log("Error occurred:", error);
+                    });
+            };
+        }]);
+    </script>
+</body>
+</html>
